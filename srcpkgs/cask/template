@@ -1,0 +1,32 @@
+# Template file for 'cask'
+pkgname=cask
+version=0.8.1
+revision=1
+depends="emacs>=23 python"
+short_desc="Project management tool for Emacs"
+maintainer="Robert Crim <rob@servermilk.com>"
+license="GPL-3"
+homepage="https://github.com/cask"
+distfiles="${homepage}/${pkgname}/archive/v${version}.tar.gz"
+checksum=8739ba608f23c79b3426faa8b068d5d1bc096c7305ce30b1163babd354be821c
+
+do_install() {
+	PREFIX=usr/share/${pkgname}
+
+	vmkdir ${PREFIX}
+	vcopy "*.el" ${PREFIX}
+
+	vmkdir ${PREFIX}/bin
+	vcopy bin/cask ${PREFIX}/bin/cask
+
+	vmkdir usr/bin
+	ln -rs ${DESTDIR}/${PREFIX}/bin/cask ${DESTDIR}/usr/bin/cask
+
+	SITE_LISP=usr/share/emacs/site-lisp/${pkgname}
+	vmkdir $SITE_LISP
+
+	ln -rs ${DESTDIR}/${PREFIX}/cask.el ${DESTDIR}/${SITE_LISP}/cask.el
+	ln -rs ${DESTDIR}/${PREFIX}/cask-bootstrap.el ${DESTDIR}/${SITE_LISP}/cask-bootstrap.el
+
+	touch "${DESTDIR}/${PREFIX}/.no-upgrade"
+}
